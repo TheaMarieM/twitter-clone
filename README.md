@@ -68,7 +68,7 @@ A simple Twitter clone built with Laravel, allowing users to post tweets, like, 
 
 
 ## Credits
-- **AI Tools Used:** GitHub Copilot (GPT-4.1)
+- **AI Tools Used:** Claude Desktop and Chatgpt
   - Assisted with code generation, UI layout, and documentation.
 - **Technologies:**
   - Laravel (PHP 8.2+)
