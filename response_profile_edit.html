@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="JkZoCGiovGsyxkgK5gw9TPp0sQPr95nV7BZcZBUm">
+    <title>Login - Twitter Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="http://127.0.0.1:8000" class="flex items-center space-x-2">
+                    <i class="fab fa-twitter text-blue-500 text-3xl"></i>
+                    <span class="text-xl font-bold hidden sm:inline">Twitter Clone</span>
+                </a>
+                
+                <div class="flex items-center space-x-4">
+                                            <a href="http://127.0.0.1:8000/login" class="text-blue-500 hover:text-blue-600 font-semibold">Login</a>
+                        <a href="http://127.0.0.1:8000/register" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition">
+                            Sign Up
+                        </a>
+                                    </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    
+    
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <div class="max-w-md mx-auto mt-10">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="text-center mb-6">
+            <i class="fab fa-twitter text-blue-500 text-5xl mb-2"></i>
+            <h2 class="text-2xl font-bold">Sign in to Twitter Clone</h2>
+        </div>
+
+        <form action="http://127.0.0.1:8000/login" method="POST">
+            <input type="hidden" name="_token" value="JkZoCGiovGsyxkgK5gw9TPp0sQPr95nV7BZcZBUm" autocomplete="off">            
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
+                <input type="email" id="email" name="email" value="" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent " 
+                    required>
+                            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                <input type="password" id="password" name="password" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent " 
+                    required>
+                            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center">
+                    <input type="checkbox" name="remember" class="rounded border-gray-300 text-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-gray-700">Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-full transition">
+                Log In
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-gray-600">
+            Don't have an account? 
+            <a href="http://127.0.0.1:8000/register" class="text-blue-500 hover:text-blue-600 font-semibold">Sign up</a>
+        </p>
+    </div>
+</div>
+    </main>
+
+    <script>
+        // Auto-dismiss flash messages
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
+
+        // Like/Unlike functionality with AJAX
+        // Accepts the button element: <button data-tweet-id="..." onclick="toggleLike(this)">
+        function toggleLike(el) {
+            const tweetId = el.dataset.tweetId || el.getAttribute('data-tweet-id');
+            const button = el;
+
+            if (!tweetId) return;
+
+            fetch(`/tweets/${tweetId}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const icon = button.querySelector('i');
+                const count = button.querySelector('.likes-count');
+
+                if (data.liked) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas', 'text-red-500');
+                } else {
+                    icon.classList.remove('fas', 'text-red-500');
+                    icon.classList.add('far');
+                }
+
+                if (count) {
+                    count.textContent = data.likes_count;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Character counter for tweet form
+        function updateCharCount(textarea) {
+            const maxLength = 280;
+            const currentLength = textarea.value.length;
+            const counter = document.getElementById('char-count');
+            const submitBtn = document.getElementById('tweet-submit');
+            
+            counter.textContent = `${currentLength}/${maxLength}`;
+            
+            if (currentLength > maxLength) {
+                counter.classList.add('text-red-500');
+                counter.classList.remove('text-gray-500');
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                counter.classList.remove('text-red-500');
+                counter.classList.add('text-gray-500');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Delete confirmation
+        function confirmDelete(event) {
+            if (!confirm('Are you sure you want to delete this tweet? This action cannot be undone.')) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
