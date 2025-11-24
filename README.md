@@ -55,11 +55,8 @@ A simple Twitter clone built with Laravel, allowing users to post tweets, like, 
 
 ## Screenshots
 
-### Tweet Form and Timeline
-![Tweet Form and Timeline](screenshots/timeline.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/59c4ed59-2c5e-438a-8dd9-448f94bee468" />
 
-### Tweet Actions
-![Tweet Actions](screenshots/tweet-actions.png)
 
 ## Credits
 - **AI Tools Used:** GitHub Copilot (GPT-4.1)
